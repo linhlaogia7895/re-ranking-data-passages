@@ -1,4 +1,5 @@
 # re-ranking-data-passages
+#intasll all neccessary libraries for this project
 
-#install pillow
     pip install pillow
+    pip install pandas
