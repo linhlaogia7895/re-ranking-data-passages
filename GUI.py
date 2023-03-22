@@ -40,15 +40,30 @@ def disableButton():
         button1.config(state=DISABLED)
         button2.config(state=NORMAL)
 
-listFrame = LabelFrame(root, width=300, height=100, text = "File List...")
+def processData(fileList):
+    evaluation.config(text=PD.evaluation(fileList))
+#First fame is for Data File input
+frame1 = Frame(root, width=700, height=200)
+frame1.pack()
+
+#Second fame is for Evaluation message
+frame2 = Frame(root, width=700, height=500)
+frame2.pack()
+
+#Implement compenents for frame1
+listFrame = LabelFrame(frame1, width=300, height=100, text = "File List...")
 listFrame.grid(padx=10, pady=10, row=0, column=0, rowspan=3)
-button1 = Button(root, text="Add File", width=15, command=open)
+button1 = Button(frame1, text="Add File", width=15, command=open)
 button1.grid(padx=30, pady=10, row=0, column=1)
-button2 = Button(root, text="Process Data", width=15, state=DISABLED, command=lambda: PD.processData(fileList))
+button2 = Button(frame1, text="Process Data", width=15, state=DISABLED, command=lambda: processData(fileList))
 button2.grid(padx=30, pady=10, row=2, column=1)
 for x in range (3):   
     label.append(Label(listFrame, text="", width=40, anchor="w",font=5))
     label[x].grid(padx=10, pady=5, row=x, column=0)
     removeButton.append(Button(listFrame, image=trashImage))
+
+#Implement compenents for frame2
+evaluation = Label(frame2, text="test", padx= 20, pady=20)
+evaluation.pack()
 
 root.mainloop()
