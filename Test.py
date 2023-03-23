@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 fileList = ["output-york07-ga-01.txt", "output-york07-ga-02.txt", "output-york07-ga-03.txt"]
@@ -20,6 +21,5 @@ for i in range(1, len(dfs)):
 
 # Fill NaN values with 0
 mergedDf = mergedDf.fillna(0)
-
 
 print(mergedDf)
