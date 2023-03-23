@@ -22,4 +22,16 @@ for i in range(1, len(dfs)):
 # Fill NaN values with 0
 mergedDf = mergedDf.fillna(0)
 
-print(mergedDf)
+#Method 1: rerank by calculate mean of three okapi score columns
+
+data1 = mergedDf.copy()
+data1["Average Okapi"] = data1[["Okapi Score_x", "Okapi Score_y", "Okapi Score"]].mean(axis=1).round(3)
+df = []
+for name, group in data1.groupby('Topic#'):
+    top_1000 = group.sort_values(by='Average Okapi', ascending=False).head(n=1000)
+    top_1000["new_rank"] = top_1000["Average Okapi"].rank(ascending=False).astype(int)
+    df.append(top_1000)
+data1 = pd.concat(df)
+#print(data1)
+data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('output-format-method-1.csv', index=False)
+data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('output-format-method-1.txt', sep='\t', header=False, index=False)
