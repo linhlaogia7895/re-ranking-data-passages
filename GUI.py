@@ -63,7 +63,7 @@ for x in range (3):
     removeButton.append(Button(listFrame, image=trashImage))
 
 #Implement compenents for frame2
-evaluation = Label(frame2, text="test", padx= 20, pady=20)
+evaluation = Label(frame2, text="", padx= 20, pady=20)
 evaluation.pack()
 
 root.mainloop()

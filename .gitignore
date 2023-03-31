@@ -1,0 +1,8 @@
+# Ignore compiled code and build artifacts
+*.pyc
+*.pyo
+__pycache__/
+build/
+dist/
+*.csv
+output-format-method-1.txt
