@@ -31,9 +31,9 @@ def evaluation(fileList):
         df.append(top_1000)
     data1 = pd.concat(df)
     #print(data1)
-    data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('output-format-method-1.csv', index=False)
-    data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('output-format-method-1.txt', sep='\t', header=False, index=False)
+    data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('Export Data\\output-format-method-1.csv', index=False)
+    data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('Export Data\\output-format-method-1.txt', sep='\t', header=False, index=False)
     #return data
     #return data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]]
-    result = subprocess.run(['python', 'trecgen2007_score.py', 'gold-standard-07.txt', 'output-format-method-1.txt'], capture_output=True, text=True)
+    result = subprocess.run(['python', 'trecgen2007_score.py', 'gold-standard-07.txt', 'Export Data\\output-format-method-1.txt'], capture_output=True, text=True)
     return result.stdout
