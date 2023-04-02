@@ -15,6 +15,7 @@ trashImage = ImageTk.PhotoImage(image)
 label = []
 removeButton = []
 fileList = ["", "", ""]
+selectedOption = StringVar(value="Mean Score")
 
 def openFile():
     root.filename = filedialog.askopenfilename(initialdir = initialDir,title="Select a File", filetypes=(("txt files", "*.txt"),("all files", "*.*")) )
@@ -42,7 +43,7 @@ def disableButton():
 a=0
 def processData(fileList):
 
-    evaluation.config(text=PD.evaluation(fileList))
+    evaluation.config(text=PD.evaluation(fileList, selectedOption.get()))
     fileLabel = Label(fileFrame, text="output-format-method-1.txt", padx= 10, pady=10)
     fileLabel.grid(padx=10, pady=10, row=0, column=0, sticky="w")
     fileButton = Button(fileFrame, text="Open file", command=lambda: showContent("output-format-method-1.txt"))
@@ -97,6 +98,14 @@ listFrame.grid(padx=10, pady=10, row=0, column=0, rowspan=3)
 listFrame.grid_propagate(False)
 button1 = Button(frame1, text="Add File", width=15, command=openFile)
 button1.grid(padx=30, pady=10, row=0, column=1)
+menu_button = Menubutton(frame1, textvariable=selectedOption, width=15, relief=RAISED, borderwidth=2, highlightbackground="#555", padx=10, pady=5)
+menu_button.grid(padx=30, pady=10, row=1, column=1)
+dropdown_menu = Menu(menu_button, tearoff=False)
+dropdown_menu.add_radiobutton(label="Mean Score", variable=selectedOption, value="Mean Score")
+dropdown_menu.add_radiobutton(label="Knn", variable=selectedOption, value="Knn")
+dropdown_menu.add_radiobutton(label="Decision Tree", variable=selectedOption, value="Decision Tree")
+menu_button.config(menu=dropdown_menu)
+
 button2 = Button(frame1, text="Process Data", width=15, state=DISABLED, command=lambda: processData(fileList))
 button2.grid(padx=30, pady=10, row=2, column=1)
 for x in range (3):   

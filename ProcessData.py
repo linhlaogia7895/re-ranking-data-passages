@@ -1,9 +1,16 @@
 import pandas as pd
 import numpy as np
 import subprocess
-def evaluation(fileList):
+def evaluation(fileList, selectedOption):
+    if selectedOption == "Decision Tree":
+        return decisionTree(fileList)
+    elif selectedOption == "Knn":
+        return knn(fileList)
+    else:
+        return meanScore(fileList)
+    
+def meanScore(fileList):
     dfs = []
-
     # Loop through each file and read it into a data frame
     for path in fileList:
         df = pd.read_csv("Data\\"+path, 
@@ -37,3 +44,9 @@ def evaluation(fileList):
     #return data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]]
     result = subprocess.run(['python', 'trecgen2007_score.py', 'gold-standard-07.txt', 'Export Data\\output-format-method-1.txt'], capture_output=True, text=True)
     return result.stdout
+
+def decisionTree(fileList):
+    return fileList
+
+def knn(fileList):
+    return fileList
