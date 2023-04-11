@@ -1,15 +1,12 @@
 import pandas as pd
 import numpy as np
+from sklearn.impute import KNNImputer
+from sklearn.preprocessing import MinMaxScaler
 import subprocess
 def evaluation(fileList, selectedOption):
-    if selectedOption == "Decision Tree":
-        return decisionTree(fileList)
-    elif selectedOption == "Knn":
-        return knn(fileList)
-    else:
-        return meanScore(fileList)
-    
-def meanScore(fileList):
+    substrings = [element[-6:-4] for element in fileList]
+    string = '-'.join(substrings)
+    option = selectedOption
     dfs = []
     # Loop through each file and read it into a data frame
     for path in fileList:
@@ -24,29 +21,53 @@ def meanScore(fileList):
     for i in range(1, len(dfs)):
         mergedDf = pd.merge(mergedDf, dfs[i][["Topic#", "Document ID", "Okapi Score", "Byte Offset", "Passage Length", "Tag ID"]], on=["Topic#", "Document ID", "Byte Offset", "Passage Length"], how='outer')
 
-    # Fill NaN values with 0
-    mergedDf = mergedDf.fillna(0)
 
-    #Method 1: rerank by calculate mean of three okapi score columns
-
+    if selectedOption == "Decision Tree":
+        return decisionTree(mergedDf, string, option)
+    elif selectedOption == "K-mean":
+        return knn(mergedDf, string, option)
+    else:
+        return meanScore(mergedDf, string, option) 
+   
+def meanScore(mergedDf, string, option):
+    #Method 1: rerank by calculate mean of three okapi score columns using defaul 0 for missing values
     data1 = mergedDf.copy()
-    data1["Average Okapi"] = data1[["Okapi Score_x", "Okapi Score_y", "Okapi Score"]].mean(axis=1).round(3)
+    data1 = data1.fillna(0)
+    return output(data1, string, option)
+    
+def decisionTree(fileList, string, option):
+    return fileList
+
+def knn(mergedDf, string, option):
+    data2 = mergedDf.copy()
+    #impute missing values using KNN
+
+    columns = ["Okapi Score_x", "Okapi Score_y", "Okapi Score"]
+
+    # nomalize the scores (0-1)
+    scaler = MinMaxScaler()
+    scaledScores = scaler.fit_transform(data2[columns])
+
+    # Impute missing data using kNN
+    imputer = KNNImputer(n_neighbors=3, weights='uniform')
+    imputed_scores = imputer.fit_transform(scaledScores)
+
+    rescaledScores = scaler.inverse_transform(imputed_scores)
+    data2[columns] = rescaledScores
+    return output(data2, string, option)
+
+def output(data, string, option):
+    data["Average Okapi"] = data[["Okapi Score_x", "Okapi Score_y", "Okapi Score"]].mean(axis=1).round(3)
     df = []
-    for name, group in data1.groupby('Topic#'):
+    for name, group in data.groupby('Topic#'):
         top_1000 = group.sort_values(by='Average Okapi', ascending=False).head(n=1000)
         top_1000["new_rank"] = top_1000["Average Okapi"].rank(ascending=False).astype(int)
         df.append(top_1000)
-    data1 = pd.concat(df)
+    data = pd.concat(df)
     #print(data1)
-    data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('Export Data\\output-format-method-1.csv', index=False)
-    data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv('Export Data\\output-format-method-1.txt', sep='\t', header=False, index=False)
+    data[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv("Export Data\\output-format-"+string+"-"+option+".csv", index=False)
+    data[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]].to_csv("Export Data\\output-format-"+string+"-"+option+".txt", sep='\t', header=False, index=False)
     #return data
     #return data1[["Topic#", "Document ID", "new_rank", "Average Okapi", "Byte Offset", "Passage Length", "Tag ID"]]
-    result = subprocess.run(['python', 'trecgen2007_score.py', 'gold-standard-07.txt', 'Export Data\\output-format-method-1.txt'], capture_output=True, text=True)
+    result = subprocess.run(['python', 'trecgen2007_score.py', 'gold-standard-07.txt', 'Export Data\\output-format-'+string+'-'+option+'.txt'], capture_output=True, text=True)
     return result.stdout
-
-def decisionTree(fileList):
-    return fileList
-
-def knn(fileList):
-    return fileList

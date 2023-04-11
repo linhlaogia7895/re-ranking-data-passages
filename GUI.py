@@ -42,11 +42,13 @@ def disableButton():
         button2.config(state=NORMAL)
 a=0
 def processData(fileList):
-
+    substrings = [element[-6:-4] for element in fileList]
+    string = '-'.join(substrings)
+    option = selectedOption.get()
     evaluation.config(text=PD.evaluation(fileList, selectedOption.get()))
-    fileLabel = Label(fileFrame, text="output-format-method-1.txt", padx= 10, pady=10)
+    fileLabel = Label(fileFrame, text="output-format-"+string+"-"+option+".txt", padx= 10, pady=10)
     fileLabel.grid(padx=10, pady=10, row=0, column=0, sticky="w")
-    fileButton = Button(fileFrame, text="Open file", command=lambda: showContent("output-format-method-1.txt"))
+    fileButton = Button(fileFrame, text="Open file", command=lambda: showContent("output-format-"+string+"-"+option+".txt"))
     fileButton.grid(padx=40, pady=10, row=0, column=1)
     vsb.pack(side="right", fill="y")
 
@@ -102,7 +104,7 @@ menu_button = Menubutton(frame1, textvariable=selectedOption, width=15, relief=R
 menu_button.grid(padx=30, pady=10, row=1, column=1)
 dropdown_menu = Menu(menu_button, tearoff=False)
 dropdown_menu.add_radiobutton(label="Mean Score", variable=selectedOption, value="Mean Score")
-dropdown_menu.add_radiobutton(label="Knn", variable=selectedOption, value="Knn")
+dropdown_menu.add_radiobutton(label="K-mean", variable=selectedOption, value="K-mean")
 dropdown_menu.add_radiobutton(label="Decision Tree", variable=selectedOption, value="Decision Tree")
 menu_button.config(menu=dropdown_menu)
 
