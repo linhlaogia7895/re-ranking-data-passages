@@ -105,7 +105,7 @@ menu_button.grid(padx=30, pady=10, row=1, column=1)
 dropdown_menu = Menu(menu_button, tearoff=False)
 dropdown_menu.add_radiobutton(label="Mean Score", variable=selectedOption, value="Mean Score")
 dropdown_menu.add_radiobutton(label="K-mean", variable=selectedOption, value="K-mean")
-dropdown_menu.add_radiobutton(label="Decision Tree", variable=selectedOption, value="Decision Tree")
+dropdown_menu.add_radiobutton(label="EM Algorithm", variable=selectedOption, value="EM Algorithm")
 menu_button.config(menu=dropdown_menu)
 
 button2 = Button(frame1, text="Process Data", width=15, state=DISABLED, command=lambda: processData(fileList))
