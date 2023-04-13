@@ -65,16 +65,16 @@ def EMAlgorithm(mergedDf, string, option):
     data3["Average"] = data3[["Okapi Score_x", "Okapi Score_y", "Okapi Score"]].mean(axis=1)
     
     selected_passages = []
-
-    for _ in range(1000):
-        gmm = GaussianMixture(n_components=10, random_state=42)
-        data3['Cluster'] = gmm.fit_predict(data3[["Okapi Score_x", "Okapi Score_y", "Okapi Score"]])
-        
-        picked_passages = data3.loc[data3.groupby('Topic#')['Cluster'].idxmin()]
-        selected_passages.append(picked_passages)
-        
-        # Remove picked passages from the data
-        data3 = data3.drop(picked_passages.index)
+    for name, group in data3.groupby('Topic#'):
+        for _ in range(1000):
+            gmm = GaussianMixture(n_components=10, random_state=42)
+            group['Cluster'] = gmm.fit_predict(group[["Okapi Score_x", "Okapi Score_y", "Okapi Score"]])
+            
+            picked_passages = group.loc[group.groupby('Topic#')['Cluster'].idxmin()]
+            selected_passages.append(picked_passages)
+            
+            # Remove picked passages from the data
+            group = group.drop(picked_passages.index)
         
     newData =  pd.concat(selected_passages)
     #Use Gaussian Mixture Model (GMM)
